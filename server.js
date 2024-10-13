@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-// TODO: Security, Error Handling, Auth, Github Ruleset, CI/CD
+// TODO: Security, Error Handling, Auth, Github Ruleset, CI/CD, Logging
 
 mongoose
   .connect(dbConfig.url)
