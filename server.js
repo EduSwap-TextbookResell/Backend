@@ -1,17 +1,16 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
 import 'dotenv/config';
+import cors from 'cors';
+import express from 'express';
 import mongoose from 'mongoose';
 
-import routes from './src/routes/routes.js';
 import dbConfig from './src/configs/db.config.js';
+import routes from './src/routes/routes.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // TODO: Security, Error Handling, Auth, Github Ruleset, CI/CD, Logging
@@ -21,8 +20,8 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch((err) => console.log(err));
 
-routes(app);
+app.use('/', routes);
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Running at http://localhost:${port}`);
 });

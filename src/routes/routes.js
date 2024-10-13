@@ -1,18 +1,17 @@
+import { Router } from 'express';
+
 import testRouter from './test.route.js';
 
-export default (app) => {
-  app.get('/', (req, res) => {
-    res.json({ message: 'ok' });
-  });
+const router = Router();
 
-  app.use('/test', testRouter);
+router.get('/', (req, res) => {
+  res.json({ message: 'ok' });
+});
 
-  /* Error handler middleware */
-  app.use((err, req, res, _) => {
-    const statusCode = err.statusCode || 500;
-    console.error('Error:', err.message, err.stack);
-    res
-      .status(statusCode)
-      .json({ message: err.message || 'Internal Server Error' });
-  });
-};
+router.use('/api/test', testRouter);
+
+router.use('/api', (req, res) =>
+  res.status(404).json('No route for this path'),
+);
+
+export default router;

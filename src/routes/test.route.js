@@ -1,7 +1,8 @@
-import express from 'express';
+import { Router } from 'express';
+
 import testController from '../controllers/test.controller.js';
 
-const router = express.Router();
+const router = Router();
 
 router.get('/', testController.get);
 router.post('/', testController.create);
