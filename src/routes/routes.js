@@ -1,6 +1,6 @@
 import testRouter from './test.route.js';
 
-export default function (app) {
+export default (app) => {
   app.get('/', (req, res) => {
     res.json({ message: 'ok' });
   });
@@ -15,4 +15,4 @@ export default function (app) {
       .status(statusCode)
       .json({ message: err.message || 'Internal Server Error' });
   });
-}
+};

@@ -1,6 +1,6 @@
 import Test from '../models/test.model.js';
 
-async function get(req, res, next) {
+const get = async (req, res, next) => {
   try {
     const tests = await Test.find();
     res.json(tests);
@@ -8,9 +8,9 @@ async function get(req, res, next) {
     console.error(`Error while getting test`, err.message);
     next(err);
   }
-}
+};
 
-async function create(req, res, next) {
+const create = async (req, res, next) => {
   try {
     const test = await Test.create(req.body);
     res.status(201).json(test);
@@ -18,9 +18,9 @@ async function create(req, res, next) {
     console.error(`Error while creating test`, err.message);
     next(err);
   }
-}
+};
 
-async function update(req, res, next) {
+const update = async (req, res, next) => {
   try {
     const updatedTest = await Test.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -33,9 +33,9 @@ async function update(req, res, next) {
     console.error(`Error while updating test`, err.message);
     next(err);
   }
-}
+};
 
-async function remove(req, res, next) {
+const remove = async (req, res, next) => {
   try {
     const deletedTest = await Test.findByIdAndDelete(req.params.id);
     if (!deletedTest) {
@@ -46,7 +46,7 @@ async function remove(req, res, next) {
     console.error(`Error while deleting test`, err.message);
     next(err);
   }
-}
+};
 
 export default {
   get,
