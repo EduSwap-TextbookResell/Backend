@@ -1,0 +1,24 @@
+services:
+  mongo:
+    container_name: mongo
+    image: mongo
+    command: mongod --quiet --logpath /dev/null 2>&1
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  api:
+    container_name: api
+    build: .
+    volumes:
+      - .:/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
+    driver: local
