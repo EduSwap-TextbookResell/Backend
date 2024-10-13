@@ -10,10 +10,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-// TODO: Docker, Security, Error Handling, Auth
+// TODO: Docker, Security, Error Handling, Auth, Github Ruleset, CI/CD
 
 mongoose
   .connect(dbConfig.url)
