@@ -1,14 +1,17 @@
 import { Router } from 'express';
 
-import testRouter from './test.route.js';
+import authRoutes from './authRoutes.js';
+import userRoutes from './userRoutes.js';
 
 const router = Router();
 
-router.get('/', (req, res) => {
+router.get('/api', (req, res) => {
   res.json({ message: 'ok' });
 });
 
-router.use('/api/test', testRouter);
+router.use('/api/auth', authRoutes);
+
+router.use('/api/user', userRoutes);
 
 router.use('/api', (req, res) =>
   res.status(404).json('No route for this path'),

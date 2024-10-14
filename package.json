@@ -13,20 +13,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EduSwap-TextbookResell/Backend-structure.git"
+    "url": "git+https://github.com/EduSwap-TextbookResell/Backend.git"
   },
   "keywords": [],
   "author": "EduSwap",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/EduSwap-TextbookResell/Backend-structure/issues"
+    "url": "https://github.com/EduSwap-TextbookResell/Backend/issues"
   },
-  "homepage": "https://github.com/EduSwap-TextbookResell/Backend-structure#readme",
+  "homepage": "https://github.com/EduSwap-TextbookResell/Backend#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "mongoose": "^8.7.1"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "winston": "^3.15.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
