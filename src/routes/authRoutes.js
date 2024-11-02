@@ -1,50 +1,55 @@
 import { Router } from 'express';
 
-import requireLocalAuth from '../middlewares/requireLocalAuth.js';
 import User from '../models/user.js';
 
 const router = Router();
 
-router.post('/login', requireLocalAuth, (req, res) => {
-  const token = req.user.generateJWT();
-  const me = req.user.toJSON();
-  res.json({ token, me });
-});
-
-router.post('/register', async (req, res, next) => {
-  const { email, password, name, username } = req.body;
+router.post('/login', async (req, res, next) => {
+  const { email, password } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.status(422).send({ message: 'Email is in use' });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).send({ message: 'User does not exist' });
     }
 
-    try {
-      const newUser = await new User({
-        provider: 'email',
-        email,
-        password,
-        username,
-        name,
-      });
-
-      newUser.registerUser(newUser, (err, _) => {
-        if (err) throw err;
-        res.json({ message: 'Register success' });
-      });
-    } catch (err) {
-      return next(err);
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Incorrect password' });
     }
+
+    const accessToken = user.generateJWT();
+
+    return res
+      .status(200)
+      .json({ message: 'User logged in', accessToken: accessToken });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
-router.get('/logout', (req, res) => {
-  req.logout();
-  res.send(false);
+router.post('/register', async (req, res, next) => {
+  const { email, password, username } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      const message =
+        existingUser.email === email ? 'Email is in use' : 'Username is in use';
+      return res.status(409).json({ message });
+    }
+
+    const newUser = new User({
+      email,
+      password,
+      username,
+    });
+
+    await newUser.registerUser(newUser);
+    res.status(201).json({ message: 'Register success' });
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;

@@ -2,12 +2,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
+import secretOrKey from '../configs/jwt.js';
+
 const UserSchema = new mongoose.Schema(
   {
-    provider: {
-      type: String,
-      required: true,
-    },
     username: {
       type: String,
       lowercase: true,
@@ -32,19 +30,8 @@ const UserSchema = new mongoose.Schema(
       minlength: 6,
       maxlength: 60,
     },
-    name: {
-      type: String,
-      required: [true, "can't be blank"],
-      minlength: 2,
-      maxlength: 30,
-    },
     role: { type: String, default: 'USER' },
     bio: String,
-    googleId: {
-      type: String,
-      unique: true,
-      sparse: true,
-    },
   },
   { timestamps: true },
 );
@@ -52,31 +39,16 @@ const UserSchema = new mongoose.Schema(
 UserSchema.methods.toJSON = function () {
   return {
     id: this._id,
-    provider: this.provider,
     email: this.email,
     username: this.username,
-    name: this.name,
     role: this.role,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
   };
 };
 
-const secretOrKey =
-  process.env.NODE_ENV === 'production'
-    ? process.env.JWT_SECRET_PROD
-    : process.env.JWT_SECRET_DEV;
-
 UserSchema.methods.generateJWT = function () {
-  return jwt.sign(
-    {
-      expiresIn: '12h',
-      id: this._id,
-      provider: this.provider,
-      email: this.email,
-    },
-    secretOrKey,
-  );
+  return jwt.sign({ id: this._id }, secretOrKey, { expiresIn: '1d' });
 };
 
 UserSchema.methods.registerUser = async function (newUser) {
@@ -85,26 +57,19 @@ UserSchema.methods.registerUser = async function (newUser) {
     newUser.password = await bcrypt.hash(newUser.password, salt);
     await newUser.save();
   } catch (err) {
-    console.log(err);
+    console.error(err);
     throw err;
   }
 };
 
-UserSchema.methods.comparePassword = function (candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) return callback(err);
-    callback(null, isMatch);
-  });
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  try {
+    return bcrypt.compare(candidatePassword, this.password);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 };
-
-export async function hashPassword(password) {
-  return await new Promise((resolve, reject) => {
-    bcrypt.hash(password, 10, function (err, hash) {
-      if (err) reject(err);
-      else resolve(hash);
-    });
-  });
-}
 
 const User = mongoose.model('User', UserSchema);
 

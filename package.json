@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon -q server.js",
     "lint": "eslint --fix './**/*.{js,cjs,mjs}'",
     "format": "prettier --write './**/*.{js,cjs,mjs,md,json}'",
     "prepare": "husky",
@@ -31,7 +31,6 @@
     "mongoose": "^8.7.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0",
     "winston": "^3.15.0"
   },
   "devDependencies": {
@@ -46,6 +45,5 @@
     "lint-staged": "^15.2.10",
     "nodemon": "^3.1.7",
     "prettier": "^3.3.3"
-  },
-  "packageManager": "pnpm@9.12.0"
+  }
 }

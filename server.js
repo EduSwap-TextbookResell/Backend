@@ -6,7 +6,6 @@ import passport from 'passport';
 
 import dbConfig from './src/configs/db.js';
 import routes from './src/routes/index.js';
-import './src/services/localStrategy.js';
 import './src/services/jwtStrategy.js';
 
 const app = express();
@@ -18,12 +17,12 @@ app.use(cors());
 
 app.use(passport.initialize());
 
-// TODO: Security, Error Handling, Google Auth, Data Validation, Github Ruleset, CI/CD, Logging
+// TODO: Security, Error Handling, Data Validation, Github Ruleset, CI/CD, Logging
 
 mongoose
   .connect(dbConfig.url)
   .then(() => console.log('MongoDB Connected'))
-  .catch((err) => console.log(err));
+  .catch((err) => console.error(err));
 
 app.use('/', routes);
 
