@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import passport from 'passport';
 
 import dbConfig from './src/configs/db.js';
+import logger from './src/configs/logger.js';
 import routes from './src/routes/index.js';
 import './src/services/jwtStrategy.js';
 
@@ -17,7 +18,20 @@ app.use(cors());
 
 app.use(passport.initialize());
 
-// TODO: Security, Error Handling, Data Validation, Github Ruleset, CI/CD, Logging
+app.use((req, res, next) => {
+  logger.http({
+    method: req.method,
+    url: req.url,
+    status: res.statusCode,
+    headers: req.headers,
+    body: req.body,
+    params: req.params,
+    ip: req.ip,
+  });
+  next();
+});
+
+// TODO: Security, Error Handling, Data Validation, Github Ruleset, CI/CD
 
 mongoose
   .connect(dbConfig.url)
