@@ -13,16 +13,14 @@ router.post('/login', async (req, res, next) => {
       return res.status(401).send({ message: 'User does not exist' });
     }
 
-    const isMatch = await user.comparePassword(password);
+    const isMatch = user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
     const accessToken = user.generateJWT();
 
-    return res
-      .status(200)
-      .json({ message: 'User logged in', accessToken: accessToken });
+    return res.status(200).header('Authorization', accessToken).json(user);
   } catch (err) {
     next(err);
   }
@@ -45,8 +43,8 @@ router.post('/register', async (req, res, next) => {
       username,
     });
 
-    await newUser.registerUser(newUser);
-    res.status(201).json({ message: 'Register success' });
+    await newUser.registerUser();
+    res.status(201).json(newUser);
   } catch (err) {
     next(err);
   }

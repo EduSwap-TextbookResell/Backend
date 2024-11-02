@@ -3,19 +3,22 @@ import User from '../models/user.js';
 const get = async (req, res, next) => {
   try {
     const users = await User.find();
-    res.json(users);
+    res.status(200).json(users);
   } catch (err) {
-    console.error(`Error while getting user`, err.message);
     next(err);
   }
 };
 
-const create = async (req, res, next) => {
+const getOne = async (req, res, next) => {
   try {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
+    const user = await User.findOne({
+      username: { $regex: req.params.username },
+    });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
   } catch (err) {
-    console.error(`Error while creating user`, err.message);
     next(err);
   }
 };
@@ -30,7 +33,6 @@ const update = async (req, res, next) => {
     }
     res.json(updatedUser);
   } catch (err) {
-    console.error(`Error while updating user`, err.message);
     next(err);
   }
 };
@@ -39,18 +41,17 @@ const remove = async (req, res, next) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser) {
-      return res.status(404).json({ message: 'User not found' }); // Handle if test not found
+      return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ message: 'User deleted successfully' });
+    res.status(204).send();
   } catch (err) {
-    console.error(`Error while deleting User`, err.message);
     next(err);
   }
 };
 
 export default {
   get,
-  create,
+  getOne,
   update,
   remove,
 };

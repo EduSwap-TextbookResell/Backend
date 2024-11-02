@@ -6,9 +6,8 @@ import requireJwtAuth from '../middlewares/requireJwtAuth.js';
 const router = Router();
 
 router.get('/', requireJwtAuth, userController.get);
-// router.get('/:username', requireJwtAuth, userController.getOne);
+router.get('/:username', requireJwtAuth, userController.getOne);
 router.put('/:id', requireJwtAuth, userController.update);
-// router.get('/profile', requireJwtAuth, userController.profile);
 router.delete('/:id', requireJwtAuth, userController.remove);
 
 export default router;

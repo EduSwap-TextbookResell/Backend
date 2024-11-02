@@ -47,28 +47,23 @@ UserSchema.methods.toJSON = function () {
   };
 };
 
+UserSchema.methods.registerUser = async function () {
+  try {
+    const salt = bcrypt.genSaltSync(10);
+    this.password = bcrypt.hash(this.password, salt);
+    await this.save();
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 UserSchema.methods.generateJWT = function () {
   return jwt.sign({ id: this._id }, secretOrKey, { expiresIn: '1d' });
 };
 
-UserSchema.methods.registerUser = async function (newUser) {
-  try {
-    const salt = await bcrypt.genSalt(10);
-    newUser.password = await bcrypt.hash(newUser.password, salt);
-    await newUser.save();
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
-
-UserSchema.methods.comparePassword = async function (candidatePassword) {
-  try {
-    return bcrypt.compare(candidatePassword, this.password);
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
+UserSchema.methods.comparePassword = function (candidatePassword) {
+  return bcrypt.compareSync(candidatePassword, this.password);
 };
 
 const User = mongoose.model('User', UserSchema);

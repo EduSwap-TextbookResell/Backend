@@ -14,7 +14,7 @@ COPY . /api
 EXPOSE 3000
 
 # DEV
-CMD [ "pnpm", "exec", "nodemon", "server.js"]
+CMD [ "pnpm", "exec", "nodemon", "-q", "server.js"]
 
 ## PROD
 #RUN pnpm i -g pm2
