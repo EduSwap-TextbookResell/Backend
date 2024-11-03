@@ -12,12 +12,16 @@ services:
   api:
     container_name: api
     build: .
+    user: "${UID}:${GID}"
     volumes:
       - .:/api
     ports:
       - "3000:3000"
     depends_on:
       - mongo
+    environment:
+      - UID=${UID}
+      - GID=${GID}
 
 volumes:
   mongo-data:
