@@ -1,21 +1,27 @@
-FROM node
+FROM node:22-slim AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+
 RUN corepack enable
-
-WORKDIR /api
-
-COPY package.json /api
-RUN pnpm i
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 COPY . /api
+WORKDIR /api
+
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+FROM base
+COPY --from=prod-deps /api/node_modules /api/node_modules
 
 EXPOSE 3000
 
 # DEV
-CMD [ "pnpm", "exec", "nodemon", "-q", "server.js"]
+CMD [ "pnpm", "run", "dev" ]
 
 ## PROD
-#RUN pnpm i -g pm2
-#CMD [ "pm2-runtime", "server.js" ]
+#CMD [ "pnpm", "run", "start" ]

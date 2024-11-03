@@ -5,7 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon -q server.js",
+    "dev": "nodemon -q server.js",
+    "start": "node server.js",
     "lint": "eslint --fix './**/*.{js,cjs,mjs}'",
     "format": "prettier --write './**/*.{js,cjs,mjs,md,json}'",
     "prepare": "husky",
