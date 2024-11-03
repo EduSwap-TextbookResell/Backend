@@ -10,14 +10,13 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey,
     },
-    async (payload, done) => {
-      try {
-        const user = await User.findById(payload.id);
-        if (user) return done(null, user);
-        return done(null, false);
-      } catch (err) {
-        return done(err);
-      }
+    function (payload, done) {
+      User.findById(payload.id)
+        .then((user) => {
+          if (user) return done(null, user);
+          return done(null, false);
+        })
+        .catch((err) => done(err));
     },
   ),
 );

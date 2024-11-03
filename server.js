@@ -31,12 +31,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// TODO: Security, Error Handling, Data Validation, Github Ruleset, CI/CD
+// TODO: Data Validation, Github Ruleset, CD, nginx+docker
 
 mongoose
   .connect(dbConfig.url)
   .then(() => console.log('MongoDB Connected'))
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 
 app.use('/', routes);
 

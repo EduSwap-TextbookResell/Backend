@@ -8,12 +8,15 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
 
   api:
     container_name: api
     build: .
     user: ${UID}:${GID}
-    restart: unless-stopped
+    restart: always
     ports:
       - "3000:3000"
     volumes:

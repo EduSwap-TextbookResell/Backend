@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import logger from '../configs/logger.js';
 import authRoutes from './authRoutes.js';
 import userRoutes from './userRoutes.js';
 
@@ -13,14 +14,16 @@ router.use('/api/auth', authRoutes);
 
 router.use('/api/user', userRoutes);
 
-router.use('/api', (req, res) =>
-  res.status(404).json({ error: 'No route for this path' }),
+router.all('*', (req, res) =>
+  res.status(404).json({ message: `No route for ${req.originalUrl}` }),
 );
 
-router.use((err, req, res, _) => {
+router.use((err, req, res, _next) => {
   console.error('Error:', err.message);
 
-  res.status(500).json({
+  logger.error(err);
+
+  res.status(err.statusCode || 500).json({
     error: err.message,
   });
 });
